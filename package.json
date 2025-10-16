@@ -1,0 +1,37 @@
+{
+  "name": "backend-biblioteca",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PabloSponchiado/backend-biblioteca.git"
+  },
+  "keywords": [],
+  "author": "Pablo Sponchiado",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PabloSponchiado/backend-biblioteca/issues"
+  },
+  "homepage": "https://github.com/PabloSponchiado/backend-biblioteca#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.8.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-require": "^0.3.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
