@@ -1,61 +1,106 @@
+import type { EmprestimoDTO } from "../interface/EmprestimoDTO.js";
+import { DatabaseModel } from "./DatabaseModel.js";
+
+const database = new DatabaseModel().pool;
 
 
 class Emprestimo {
-  private id_aluno: number = 0;
-  private id_livro: number = 0;
-  private id_emprestimo: number;
-  private data_emprestimo: Date;
-  private data_devolucao: Date;
-  private status_emprestimo: string;
+  private idEmprestimo: number = 0;
+  private idLivro: number;
+  private idAluno: number;
+  private dataEmprestimo: Date;
+  private dataDevolucao: Date;
+  private statusEmprestimo: string;
 
   constructor(
-    _data_emprestimo: Date,
-    _status_emprestimo: string,
-    _data_devolucao: Date,
-    _id_emprestimo: number
+    _idAluno: number,
+    _idLivro: number,
+    _dataEmprestimo: Date,
+    _statusEmprestimo: string,
+    _dataDevolucao: Date,
+    _idEmprestimo: number
   ) {
-    this.id_emprestimo = _id_emprestimo;
-    this.data_emprestimo = _data_emprestimo;
-    this.data_devolucao = _data_devolucao;
-    this.status_emprestimo = _status_emprestimo;
+    this.idAluno = _idAluno;
+    this.idLivro = _idLivro;
+    this.idEmprestimo = _idEmprestimo;
+    this.dataEmprestimo = new Date(_dataEmprestimo);
+    this.dataDevolucao = new Date(_dataDevolucao);
+    this.statusEmprestimo = _statusEmprestimo;
   }
 
-  public getIdAluno(): number {
-    return this.id_aluno;
+  public getIdEmprestimo(): number {
+    return this.idEmprestimo;
   }
-  public setIdAluno(_id_aluno: number): void {
-    this.id_aluno = _id_aluno;
+  public setIdEmprestimo(_idEmprestimo: number): void {
+    this.idEmprestimo = _idEmprestimo;
   }
   public getIdLivro(): number {
-    return this.id_livro;
+    return this.idLivro;
   }
-  public setIdLivro(_id_livro: number): void {
-    this.id_livro = _id_livro;
+  public setIdLivro(_idLivro: number): void {
+    this.idLivro = _idLivro;
   }  
-  public getIdEmprestimo(): number {
-    return this.id_emprestimo;
+  public getIdAluno(): number {
+    return this.idAluno;
   }
-  public setIdEmprestimo(_id_emprestimo: number): void {
-    this.id_emprestimo = _id_emprestimo;
+  public setIdAluno(_idAluno: number): void {
+    this.idEmprestimo = _idAluno;
   }
-  public getData_emprestimo(): Date {
-    return this.data_emprestimo;
-  }
-  public setData_emprestimo(_data_emprestimo: Date): void {
-    this.data_emprestimo = _data_emprestimo;
-  }
-  public getData_devolucao(): Date {
-    return this.data_devolucao;
-  }
-  public setData_devolucao(_data_devolucao: Date): void {
-    this.data_devolucao = _data_devolucao;
+  public getdataEmprestimo():   Date {
+    return this.dataEmprestimo;
   }
 
-  public getStatus_emprestimo(): string {
-    return this.status_emprestimo;
+  public getdataDevolucao(): Date {
+    return this.dataDevolucao;
+  }
+  public setdataDevolucao(_dataDevolucao: Date): void {
+    this.dataDevolucao = _dataDevolucao;
   }
 
-  public setStatus_emprestimo(_status: string): void {
-    this.status_emprestimo = _status;
+  public getstatusEmprestimo(): string {
+    return this.statusEmprestimo;
+  }
+
+  public setstatusEmprestimo(_status: string): void {
+    this.statusEmprestimo = _status;
+  }
+
+
+ /**
+   * Retorna os Emprestimos cadastrados no banco de dados
+   * @returns Lista com Emprestimos cadastrados
+   * @returns valor nulo em caso de erro na consulta
+   */
+ static async listarEmprestimos(): Promise<Array<Emprestimo> | null> {
+    try {
+      let listaDeEmprestimos: Array<Emprestimo> = [];
+
+      const querySelectEmprestimos = `SELECT * FROM Emprestimo;`;
+
+      const respostaBD = await database.query(querySelectEmprestimos);
+
+      respostaBD.rows.forEach((EmprestimoBD) => {
+        const novoEmprestimo: Emprestimo = new Emprestimo(
+          EmprestimoBD.idAluno,
+          EmprestimoBD.idLivro,
+          EmprestimoBD.dataEmprestimo,
+          EmprestimoBD.dataDevolucao,
+          EmprestimoBD.statusEmprestimo,
+          EmprestimoBD.idEmprestimo
+        );
+
+        novoEmprestimo.setIdEmprestimo(EmprestimoBD.idEmprestimo);
+
+        listaDeEmprestimos.push(novoEmprestimo);
+      });
+
+      return listaDeEmprestimos;
+    } catch (error) {
+      console.error(`Erro na consulta ao banco de dados. ${error}`);
+
+      return null;
+    }
   }
 }
+
+export default Emprestimo;
