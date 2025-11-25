@@ -36,8 +36,7 @@ class Livro {
     _quantTotal: number,
     _quantDisponivel: number,
     _valorAquisicao: number,
-    _statusLivroEmprestado: string,
-
+    _statusLivroEmprestado: string
   ) {
     this.titulo = _titulo.toUpperCase();
     this.autor = _autor.toUpperCase();
@@ -151,14 +150,15 @@ class Livro {
           LivroBD.titulo,
           LivroBD.autor,
           LivroBD.editora,
-          LivroBD.anoPublicacao,
+          LivroBD.ano_publicacao,
           LivroBD.isbn,
-          LivroBD.quantTotal,
-          LivroBD.quantDisponivel,
-          LivroBD.valorAquisicao,
-          LivroBD.statusLivroEmprestado
+          LivroBD.quant_total,
+          LivroBD.quant_disponivel,
+          LivroBD.valor_aquisicao,
+          LivroBD.status_livro_emprestado
         );
 
+        ListarLivro.setIdLivro(LivroBD.id_livro);
         listaDeLivros.push(ListarLivro);
       });
 
@@ -171,33 +171,34 @@ class Livro {
   }
 
   static async cadastrarLivro(LivroBD: Livro): Promise<Boolean> {
-    const queryInsertLivro = `INSERT INTO Livro (titulo, autor, editora, anoPublicacao, isbn, quantTotal, quantDisponivel, valorAquisicao, statusLivroEmprestado) 
+    try {
+      const queryInsertLivro = `INSERT INTO Livro (titulo, autor, editora, ano_publicacao, isbn, quant_total, quant_disponivel, valor_aquisicao, status_livro_emprestado) 
                                     VALUES 
                                     ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-                                    RETURNING idLivro;`;
-    const respostaBD = await database.query(queryInsertLivro, [
-      LivroBD.titulo,
-      LivroBD.autor,
-      LivroBD.editora,
-      LivroBD.anoPublicacao,
-      LivroBD.isbn,
-      LivroBD.quantTotal,
-      LivroBD.quantDisponivel,
-      LivroBD.valorAquisicao,
-      LivroBD.statusLivroEmprestado,
-    ]);
+                                    RETURNING id_livro;`;
+      const respostaBD = await database.query(queryInsertLivro, [
+        LivroBD.titulo,
+        LivroBD.autor,
+        LivroBD.editora,
+        LivroBD.anoPublicacao,
+        LivroBD.isbn,
+        LivroBD.quantTotal,
+        LivroBD.quantDisponivel,
+        LivroBD.valorAquisicao,
+        LivroBD.statusLivroEmprestado,
+      ]);
 
-    if (respostaBD.rows.length > 0) {
-      console.info(
-        `Aluno cadastrado com sucesso! ID: ${respostaBD.rows[0].idAluno}`
-      );
-      return true;
+      if (respostaBD.rows.length > 0) {
+        console.info(
+          `Livro cadastrado com sucesso! ID: ${respostaBD.rows[0].id_livro}`
+        );
+        return true;
+      }
+      return false;
+    } catch (error: unknown) {
+      console.error(`Erro na consulta ao banco de dados. ${error}`);
+      return false;
     }
-    return false;
-  }
-  catch(error: unknown) {
-    console.error(`Erro na consulta ao banco de dados. ${error}`);
-    return false;
   }
 }
 

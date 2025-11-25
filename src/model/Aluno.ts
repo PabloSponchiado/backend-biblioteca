@@ -8,7 +8,7 @@ class Aluno {
   private ra: string;
   private nome: string;
   private sobrenome: string;
-  private dataNascimento: number;
+  private dataNascimento: string;
   private endereco: string;
   private email: string;
   private celular: number;
@@ -26,7 +26,7 @@ class Aluno {
     ra_: string,
     _nome: string,
     _sobrenome: string,
-    _dataNascimento: number,
+    _dataNascimento: string,
     _endereco: string,
     _email: string,
     _celular: number
@@ -99,7 +99,7 @@ class Aluno {
    * Retorna o telefone do Aluno
    * @returns Telefone do Aluno
    */
-  public getdataNascimento(): number {
+  public getdataNascimento(): string {
     return this.dataNascimento;
   }
 
@@ -107,7 +107,7 @@ class Aluno {
    * Atribui um telefone ao Aluno
    * @param dataNascimento novo telefone do Aluno
    */
-  public setdataNascimento(_dataNascimento: number): void {
+  public setdataNascimento(_dataNascimento: string): void {
     this.dataNascimento = _dataNascimento;
   }
 
@@ -148,13 +148,13 @@ class Aluno {
           AlunoBD.ra,
           AlunoBD.nome,
           AlunoBD.sobrenome,
-          AlunoBD.dataNascimento,
+          AlunoBD.data_nascimento,
           AlunoBD.endereco,
           AlunoBD.email,
           AlunoBD.celular
         );
 
-        novoAluno.setIdAluno(AlunoBD.idAluno);
+        novoAluno.setIdAluno(AlunoBD.id_aluno);
 
         listaDeAlunos.push(novoAluno);
       });
@@ -169,10 +169,10 @@ class Aluno {
 
   static async cadastrarAluno(AlunoBD: Aluno): Promise<Boolean> {
     try {
-      const queryInsertAluno = `INSERT INTO Aluno (nome, sobrenome, dataNascimento, endereco, email, celular) ) 
+      const queryInsertAluno = `INSERT INTO Aluno (nome, sobrenome, data_nascimento, endereco, email, celular) 
                                     VALUES 
                                     ($1, $2, $3, $4, $5, $6)
-                                    RETURNING idAluno;`;
+                                    RETURNING id_aluno;`;
       const respostaBD = await database.query(queryInsertAluno, [
         AlunoBD.nome.toUpperCase(),
         AlunoBD.sobrenome,
@@ -184,7 +184,7 @@ class Aluno {
 
       if (respostaBD.rows.length > 0) {
         console.info(
-          `Aluno cadastrado com sucesso! ID: ${respostaBD.rows[0].idAluno}`
+          `Aluno cadastrado com sucesso! ID: ${respostaBD.rows[0].id_aluno}`
         );
         return true;
       }

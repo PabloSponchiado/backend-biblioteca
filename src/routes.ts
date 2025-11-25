@@ -10,9 +10,9 @@ router.get("/api", (req: Request, res: Response) => {
 });
 
 router.get("/api/alunos", AlunoController.todos);
-router.post("/api/alunos/novo", AlunoController.novo);
+router.post("/api/alunos", AlunoController.novo);
 router.get("/api/livros", LivroController.todos);
-router.post("/api/livros/novo", LivroController.novo);
+router.post("/api/livros", LivroController.novo);
 router.get("/api/emprestimos", EmprestimoController.todos);
 
 export { router }; // Exporta o roteador
