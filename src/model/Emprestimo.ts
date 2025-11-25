@@ -3,7 +3,6 @@ import { DatabaseModel } from "./DatabaseModel.js";
 
 const database = new DatabaseModel().pool;
 
-
 class Emprestimo {
   private idEmprestimo: number = 0;
   private idLivro: number;
@@ -17,12 +16,10 @@ class Emprestimo {
     _idLivro: number,
     _dataEmprestimo: Date,
     _statusEmprestimo: string,
-    _dataDevolucao: Date,
-    _idEmprestimo: number
+    _dataDevolucao: Date
   ) {
     this.idAluno = _idAluno;
     this.idLivro = _idLivro;
-    this.idEmprestimo = _idEmprestimo;
     this.dataEmprestimo = new Date(_dataEmprestimo);
     this.dataDevolucao = new Date(_dataDevolucao);
     this.statusEmprestimo = _statusEmprestimo;
@@ -39,14 +36,14 @@ class Emprestimo {
   }
   public setIdLivro(_idLivro: number): void {
     this.idLivro = _idLivro;
-  }  
+  }
   public getIdAluno(): number {
     return this.idAluno;
   }
   public setIdAluno(_idAluno: number): void {
     this.idEmprestimo = _idAluno;
   }
-  public getdataEmprestimo():   Date {
+  public getdataEmprestimo(): Date {
     return this.dataEmprestimo;
   }
 
@@ -65,13 +62,12 @@ class Emprestimo {
     this.statusEmprestimo = _status;
   }
 
-
- /**
+  /**
    * Retorna os Emprestimos cadastrados no banco de dados
    * @returns Lista com Emprestimos cadastrados
    * @returns valor nulo em caso de erro na consulta
    */
- static async listarEmprestimos(): Promise<Array<Emprestimo> | null> {
+  static async listarEmprestimos(): Promise<Array<Emprestimo> | null> {
     try {
       let listaDeEmprestimos: Array<Emprestimo> = [];
 
@@ -85,8 +81,7 @@ class Emprestimo {
           EmprestimoBD.idLivro,
           EmprestimoBD.dataEmprestimo,
           EmprestimoBD.dataDevolucao,
-          EmprestimoBD.statusEmprestimo,
-          EmprestimoBD.idEmprestimo
+          EmprestimoBD.statusEmprestimo
         );
 
         novoEmprestimo.setIdEmprestimo(EmprestimoBD.idEmprestimo);

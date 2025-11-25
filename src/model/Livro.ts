@@ -26,7 +26,7 @@ class Livro {
    * @param _quantDisponivel CPF do Aluno
    * @param _valorAquisicao CPF do Aluno
    * @param _statusLivroEmprestado CPF do Aluno
-    */  
+   */
   constructor(
     _titulo: string,
     _autor: string,
@@ -37,25 +37,24 @@ class Livro {
     _quantDisponivel: number,
     _valorAquisicao: number,
     _statusLivroEmprestado: string,
-    _idLivro: number
+
   ) {
-    this.idLivro = _idLivro;
-    this.titulo = _titulo;
-    this.autor = _autor;
-    this.editora = _editora;
+    this.titulo = _titulo.toUpperCase();
+    this.autor = _autor.toUpperCase();
+    this.editora = _editora.toUpperCase();
     this.anoPublicacao = _anoPublicacao;
-    this.isbn = _isbn;
+    this.isbn = _isbn.toUpperCase();
     this.quantTotal = _quantTotal;
     this.quantDisponivel = _quantDisponivel;
     this.valorAquisicao = _valorAquisicao;
-    this.statusLivroEmprestado = _statusLivroEmprestado;
+    this.statusLivroEmprestado = _statusLivroEmprestado.toUpperCase();
   }
   public getTitulo(): string {
     return this.titulo;
   }
 
   public setTitulo(_titulo: string): void {
-    this.titulo = _titulo;
+    this.titulo = _titulo.toUpperCase();
   }
 
   public getAutor(): string {
@@ -63,7 +62,7 @@ class Livro {
   }
 
   public setAutor(_autor: string): void {
-    this.autor = _autor;
+    this.autor = _autor.toUpperCase();
   }
 
   public getDisponibilidade(): string {
@@ -71,7 +70,7 @@ class Livro {
   }
 
   public setDisponibilidade(_status: string): void {
-    this.statusLivroEmprestado = _status;
+    this.statusLivroEmprestado = _status.toUpperCase();
   }
 
   public getQuantDisponivel(): number {
@@ -98,7 +97,7 @@ class Livro {
     return this.isbn;
   }
   public setIsbn(_isbn: string): void {
-    this.isbn = _isbn;
+    this.isbn = _isbn.toUpperCase();
   }
 
   public getAnoPublicacao(): string {
@@ -112,7 +111,7 @@ class Livro {
     return this.editora;
   }
   public setEditora(_editora: string): void {
-    this.editora = _editora;
+    this.editora = _editora.toUpperCase();
   }
 
   public getValorAquisicao(): number {
@@ -149,7 +148,6 @@ class Livro {
 
       respostaBD.rows.forEach((LivroBD) => {
         const ListarLivro: Livro = new Livro(
-          LivroBD.idLivro,
           LivroBD.titulo,
           LivroBD.autor,
           LivroBD.editora,
@@ -196,11 +194,11 @@ class Livro {
       return true;
     }
     return false;
-} catch (error: unknown) {
-  console.error(`Erro na consulta ao banco de dados. ${error}`);
-  return false;
-}
-
+  }
+  catch(error: unknown) {
+    console.error(`Erro na consulta ao banco de dados. ${error}`);
+    return false;
+  }
 }
 
 export default Livro;
