@@ -1,5 +1,6 @@
 import type { EmprestimoDTO } from "../interface/EmprestimoDTO.js";
 import Emprestimo from "../model/Emprestimo.js";
+import { formatarData } from "../utils/formatarData.js";
 import type { Request, Response } from "express";
 
 class EmprestimoController extends Emprestimo {
@@ -13,10 +14,17 @@ class EmprestimoController extends Emprestimo {
    */
   static async todos(req: Request, res: Response): Promise<Response> {
     try {
-      const listarEmprestimos: Array<Emprestimo> | null =
+      const listarEmprestimos: Array<EmprestimoDTO> | null =
         await Emprestimo.listarEmprestimos();
 
-      return res.status(200).json(listarEmprestimos);
+      // Formatar datas na resposta
+      const emprestimoFormatados = listarEmprestimos?.map((e) => ({
+        ...e,
+        dataEmprestimo: formatarData(e.dataEmprestimo),
+        dataDevolucao: e.dataDevolucao ? formatarData(e.dataDevolucao) : null,
+      }));
+
+      return res.status(200).json(emprestimoFormatados);
     } catch (error) {
       console.error(`Erro ao consultar modelo. ${error}`);
 

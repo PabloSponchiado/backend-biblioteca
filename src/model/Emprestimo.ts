@@ -28,72 +28,173 @@ class Emprestimo {
   public getIdEmprestimo(): number {
     return this.idEmprestimo;
   }
-  public setIdEmprestimo(_idEmprestimo: number): void {
-    this.idEmprestimo = _idEmprestimo;
+  public setIdEmprestimo(idEmprestimo: number): void {
+    this.idEmprestimo = idEmprestimo;
   }
   public getIdLivro(): number {
     return this.idLivro;
   }
-  public setIdLivro(_idLivro: number): void {
-    this.idLivro = _idLivro;
+  public setIdLivro(idLivro: number): void {
+    this.idLivro = idLivro;
   }
   public getIdAluno(): number {
     return this.idAluno;
   }
-  public setIdAluno(_idAluno: number): void {
-    this.idEmprestimo = _idAluno;
+  public setIdAluno(idAluno: number): void {
+    this.idEmprestimo = idAluno;
   }
   public getdataEmprestimo(): Date {
     return this.dataEmprestimo;
+  }
+  public setdataEmprestimo(dataEmprestimo: Date): void {
+    this.dataEmprestimo = dataEmprestimo;
   }
 
   public getdataDevolucao(): Date {
     return this.dataDevolucao;
   }
-  public setdataDevolucao(_dataDevolucao: Date): void {
-    this.dataDevolucao = _dataDevolucao;
+
+  public setdataDevolucao(dataDevolucao: Date): void {
+    this.dataDevolucao = dataDevolucao;
   }
 
   public getstatusEmprestimo(): string {
     return this.statusEmprestimo;
   }
 
-  public setstatusEmprestimo(_status: string): void {
-    this.statusEmprestimo = _status;
+  public setstatusEmprestimo(status: string): void {
+    this.statusEmprestimo = status;
   }
 
   /**
-   * Retorna os Emprestimos cadastrados no banco de dados
-   * @returns Lista com Emprestimos cadastrados
-   * @returns valor nulo em caso de erro na consulta
+   * @returns
    */
-  static async listarEmprestimos(): Promise<Array<Emprestimo> | null> {
+  static async listarEmprestimos(): Promise<Array<EmprestimoDTO> | null> {
     try {
-      let listaDeEmprestimos: Array<Emprestimo> = [];
+      let listaDeEmprestimos: Array<EmprestimoDTO> = [];
 
-      const querySelectEmprestimos = `SELECT * FROM Emprestimo;`;
+      const querySelectEmprestimos = `
+              SELECT 
+                    p.id_emprestimo,
+                    p.data_emprestimo,
+                    p.data_devolucao,
+					          p.status_emprestimo,
+                    c.id_aluno, 
+                    c.nome,
+					          c.sobrenome,
+                    h.id_livro
+                FROM emprestimo AS p
+                JOIN livro h ON p.id_livro = h.id_livro
+                JOIN aluno c ON p.id_aluno = c.id_aluno;
+            `;
 
       const respostaBD = await database.query(querySelectEmprestimos);
 
-      respostaBD.rows.forEach((EmprestimoBD) => {
-        const novoEmprestimo: Emprestimo = new Emprestimo(
-          EmprestimoBD.idAluno,
-          EmprestimoBD.idLivro,
-          EmprestimoBD.dataEmprestimo,
-          EmprestimoBD.dataDevolucao,
-          EmprestimoBD.statusEmprestimo
-        );
+      respostaBD.rows.forEach((emprestimoBD) => {
+        const dto: EmprestimoDTO = {
+          idEmprestimo: emprestimoBD.id_emprestimo,
+          idAluno: emprestimoBD.id_aluno,
+          idLivro: emprestimoBD.id_livro,
+          dataEmprestimo: emprestimoBD.data_emprestimo,
+          dataDevolucao: emprestimoBD.data_devolucao,
+          statusEmprestimo: emprestimoBD.status_emprestimo,
+        };
 
-        novoEmprestimo.setIdEmprestimo(EmprestimoBD.idEmprestimo);
-
-        listaDeEmprestimos.push(novoEmprestimo);
+        listaDeEmprestimos.push(dto);
+        console.log(listaDeEmprestimos);
       });
 
       return listaDeEmprestimos;
     } catch (error) {
-      console.error(`Erro na consulta ao banco de dados. ${error}`);
+      console.error(`Erro na consulta com o banco de dados.`, error);
 
       return null;
+    }
+  }
+
+  /**
+   * @param idEmprestimo
+   * @returns
+   */
+  static async listarEmprestimo(
+    idEmprestimo: number
+  ): Promise<EmprestimoDTO | null> {
+    try {
+      let emprestimo: EmprestimoDTO | null = null;
+
+      const querySelectEmprestimos = `
+                SELECT 
+                    p.id_emprestimo,
+                    p.data_emprestimo,
+                    p.data_devolucao,
+					          p.status_emprestimo,
+                    c.id_aluno, 
+                    c.nome,
+					          c.sobrenome,
+                    h.id_livro
+                FROM emprestimo AS p
+                JOIN livro h ON p.id_livro = h.id_livro
+                JOIN aluno c ON p.id_aluno = c.id_aluno;
+            `;
+
+      const respostaBD = await database.query(querySelectEmprestimos, [
+        idEmprestimo,
+      ]);
+
+      respostaBD.rows.forEach((emprestimoBD) => {
+        const dto: EmprestimoDTO = {
+          idAluno: emprestimoBD.id_aluno,
+          idLivro: emprestimoBD.id_livro,
+          dataEmprestimo: emprestimoBD.data_emprestimo,
+          dataDevolucao: emprestimoBD.data_devolucao,
+          statusEmprestimo: emprestimoBD.status_emprestimo,
+        };
+
+        console.log(dto);
+
+        emprestimo = dto;
+      });
+
+      return emprestimo;
+    } catch (error) {
+      console.error(`Erro na consulta com o banco de dados. ${error}`);
+
+      return null;
+    }
+  }
+
+  /**
+   * @param emprestimo
+   * @returns
+   */
+  static async cadastrarEmprestimo(
+    emprestimo: EmprestimoDTO
+  ): Promise<boolean> {
+    try {
+      const queryInsertEmprestimo = `INSERT INTO emprestimos_venda (id_cliente, id_carro, data_emprestimo, valor_emprestimo)
+                                VALUES
+                                ($1, $2, $3, $4)
+                                RETURNING id_emprestimo;`;
+
+      const respostaBD = await database.query(queryInsertEmprestimo, [
+        emprestimo.idAluno,
+        emprestimo.idLivro,
+        new Date(emprestimo.dataEmprestimo),
+      ]);
+
+      if (respostaBD.rows.length > 0) {
+        console.info(
+          `emprestimo de venda cadastrado com sucesso. ID: ${respostaBD.rows[0].id_emprestimo}`
+        );
+
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error(`Erro na consulta ao banco de dados. ${error}`);
+
+      return false;
     }
   }
 }

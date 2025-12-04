@@ -1,5 +1,6 @@
 import type { AlunoDTO } from "../interface/AlunoDTO.js";
 import Aluno from "../model/Aluno.js";
+import { formatarData } from "../utils/formatarData.js";
 import type { Request, Response } from "express";
 
 class AlunoController extends Aluno {
@@ -15,7 +16,13 @@ class AlunoController extends Aluno {
     try {
       const listarAlunos: Array<Aluno> | null = await Aluno.listarAlunos();
 
-      return res.status(200).json(listarAlunos);
+      // Formatar datas na resposta
+      const alunosFormatados = listarAlunos?.map((a) => ({
+        ...a,
+        dataNascimento: formatarData(a.getdataNascimento()),
+      }));
+
+      return res.status(200).json(alunosFormatados);
     } catch (error) {
       console.error(`Erro ao consultar modelo. ${error}`);
 

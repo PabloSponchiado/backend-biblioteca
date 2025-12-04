@@ -139,7 +139,7 @@ class Aluno {
     try {
       let listaDeAlunos: Array<Aluno> = [];
 
-      const querySelectAlunos = `SELECT * FROM Aluno;`;
+      const querySelectAlunos = `SELECT * FROM aluno;`;
 
       const respostaBD = await database.query(querySelectAlunos);
 
