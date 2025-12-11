@@ -74,23 +74,24 @@ class Emprestimo {
       let listaDeEmprestimos: Array<EmprestimoDTO> = [];
 
       const querySelectEmprestimos = `
-              SELECT 
-                    p.id_emprestimo,
-                    p.data_emprestimo,
-                    p.data_devolucao,
-					          p.status_emprestimo,
-                    c.id_aluno, 
-                    c.nome,
-					          c.sobrenome,
-                    h.id_livro
-                FROM emprestimo AS p
-                JOIN livro h ON p.id_livro = h.id_livro
-                JOIN aluno c ON p.id_aluno = c.id_aluno;
-            `;
+        SELECT
+          p.id_emprestimo,
+          p.id_aluno,
+          p.id_livro,
+          p.data_emprestimo,
+          p.data_devolucao,
+          p.status_emprestimo,
+          c.nome AS nome_aluno,
+          c.sobrenome AS sobrenome_aluno,
+          h.titulo AS titulo_livro
+        FROM emprestimo p
+        JOIN aluno c ON p.id_aluno = c.id_aluno
+        JOIN livro h ON p.id_livro = h.id_livro;
+      `;
 
       const respostaBD = await database.query(querySelectEmprestimos);
 
-      respostaBD.rows.forEach((emprestimoBD) => {
+      respostaBD.rows.forEach((emprestimoBD: any) => {
         const dto: EmprestimoDTO = {
           idEmprestimo: emprestimoBD.id_emprestimo,
           idAluno: emprestimoBD.id_aluno,
@@ -98,10 +99,12 @@ class Emprestimo {
           dataEmprestimo: emprestimoBD.data_emprestimo,
           dataDevolucao: emprestimoBD.data_devolucao,
           statusEmprestimo: emprestimoBD.status_emprestimo,
+          nomeAluno: emprestimoBD.nome_aluno,
+          sobrenomeAluno: emprestimoBD.sobrenome_aluno,
+          tituloLivro: emprestimoBD.titulo_livro,
         };
 
         listaDeEmprestimos.push(dto);
-        console.log(listaDeEmprestimos);
       });
 
       return listaDeEmprestimos;
@@ -123,34 +126,37 @@ class Emprestimo {
       let emprestimo: EmprestimoDTO | null = null;
 
       const querySelectEmprestimos = `
-                SELECT 
-                    p.id_emprestimo,
-                    p.data_emprestimo,
-                    p.data_devolucao,
-					          p.status_emprestimo,
-                    c.id_aluno, 
-                    c.nome,
-					          c.sobrenome,
-                    h.id_livro
-                FROM emprestimo AS p
-                JOIN livro h ON p.id_livro = h.id_livro
-                JOIN aluno c ON p.id_aluno = c.id_aluno;
-            `;
+        SELECT
+          p.id_emprestimo,
+          p.id_aluno,
+          p.id_livro,
+          p.data_emprestimo,
+          p.data_devolucao,
+          p.status_emprestimo,
+          c.nome AS nome_aluno,
+          c.sobrenome AS sobrenome_aluno,
+          h.titulo AS titulo_livro
+        FROM emprestimo p
+        JOIN aluno c ON p.id_aluno = c.id_aluno
+        JOIN livro h ON p.id_livro = h.id_livro;
+      `;
 
       const respostaBD = await database.query(querySelectEmprestimos, [
         idEmprestimo,
       ]);
 
-      respostaBD.rows.forEach((emprestimoBD) => {
+      respostaBD.rows.forEach((emprestimoBD: any) => {
         const dto: EmprestimoDTO = {
           idAluno: emprestimoBD.id_aluno,
           idLivro: emprestimoBD.id_livro,
+          idEmprestimo: emprestimoBD.id_emprestimo,
           dataEmprestimo: emprestimoBD.data_emprestimo,
           dataDevolucao: emprestimoBD.data_devolucao,
           statusEmprestimo: emprestimoBD.status_emprestimo,
+          nomeAluno: emprestimoBD.nome_aluno,
+          sobrenomeAluno: emprestimoBD.sobrenome_aluno,
+          tituloLivro: emprestimoBD.titulo_livro,
         };
-
-        console.log(dto);
 
         emprestimo = dto;
       });

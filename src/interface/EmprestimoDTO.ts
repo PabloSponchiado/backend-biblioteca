@@ -5,4 +5,7 @@ export interface EmprestimoDTO {
   dataEmprestimo: Date;
   dataDevolucao?: Date;
   statusEmprestimo: string;
+  nomeAluno?: string;
+  sobrenomeAluno?: string;
+  tituloLivro?: string;
 }
